@@ -1,0 +1,7 @@
+{
+  "$comment": "Shapes, not behaviour -- and this fixture is DELIBERATELY thin, which is the whole point. Resend's POST /emails answers with exactly one field: {\"id\": \"<uuid>\"}. The predecessor's faker returned from, to, subject, created_at and last_event as well; those are the GET /emails/{id} shape, and a faker that publishes them would let an author wire {{ $json.data.last_event }}, watch it work against the fake, and find it undefined the first time a real send happens. A fixture that is richer than the provider is worse than no fixture, because it fails only in production.",
+  "operation": "email_send",
+  "response": {
+    "id": { "$fake": "uuid" }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$comment": "THE hand-written part. Four packages -- ui, js, php, py -- are generated from this directory and are never edited. Fix this file, then regenerate.",
+
+  "connectorApi": 1,
+
+  "service": "resend",
+  "title": "Resend",
+  "domain": "email",
+  "docs": "https://resend.com/docs/api-reference/introduction",
+
+  "auth": "api_key",
+  "requires": ["apiKey"],
+  "authorize": {
+    "kind": "bearer",
+    "credential": "apiKey"
+  },
+
+  "headers": {
+    "User-Agent": "fancy-flow-connector",
+    "$comment": "Not cosmetic, and not optional. Resend answers 403 to a request with NO User-Agent, which reads exactly like a rejected key -- so the first thing anyone does is rotate a credential that was fine. A constant header is the kind of provider fact that has to live on the service rather than in a runbook."
+  },
+
+  "sandbox": "none",
+  "baseUrls": {
+    "live": "https://api.resend.com"
+  },
+  "sandboxNote": "Resend has NO test estate, and somebody checked. Its simulator RECIPIENTS -- delivered@resend.dev, bounced@resend.dev, complained@resend.dev, suppressed@resend.dev -- are not one: the send is real, it is billed, and it counts against the quota. Modelling them as a sandbox would put a live send behind a control labelled \"test\", so `mode` does not offer sandbox at all and `fake` is the primary development mode rather than the fallback.",
+
+  "idempotencyHeader": "Idempotency-Key",
+  "idempotencyNote": "Resend honours this for 24 hours. It is what makes a retried durable run resend nothing instead of mailing the recipient twice -- the difference between `idempotent` and `unsafe-to-replay` is that this one is merely embarrassing, not financial, but the header costs nothing and removes it entirely.",
+
+  "encoding": "json",
+
+  "credentialFields": [
+    {
+      "key": "apiKey",
+      "label": "API key",
+      "secret": true,
+      "help": "re_... from the Resend dashboard. There is only one estate, so this key sends real email."
+    }
+  ]
+}

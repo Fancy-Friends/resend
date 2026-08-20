@@ -1,0 +1,101 @@
+{
+  "operation": "email_send",
+  "kind": "email_send",
+  "title": "Send email",
+  "description": "Send an email through Resend.",
+  "summary": "send an email",
+  "icon": "✉",
+  "docs": "https://resend.com/docs/api-reference/emails/send-email",
+
+  "sideEffects": "idempotent",
+  "idempotency": "required",
+  "$idempotencyComment": "`idempotent` rather than `unsafe-to-replay`, and the distinction is the point: without a key a retry sends a SECOND email, which is embarrassing and recoverable, where a retried payment is neither. Declaring the header anyway removes even that -- the generated executor derives the key from the RUN and the NODE, never fresh, so a resumed durable run mails nobody twice.",
+
+  "request": {
+    "method": "POST",
+    "path": "/emails",
+    "encoding": "json"
+  },
+
+  "requireOneOf": {
+    "keys": ["html", "text"],
+    "error": "needs an \"html\" or \"text\" body — an empty email is never intended",
+    "$comment": "Resend rejects this too, three frames later and in its own words. A node that knows its own requirement should say so before the round trip. This is the first cross-field requirement in the vocabulary: `required` is per-field and cannot express \"one of these two\"."
+  },
+
+  "config": [
+    {
+      "type": "text",
+      "key": "from",
+      "label": "From",
+      "placeholder": "Team <team@yourdomain.com>",
+      "description": "Must be an address on a domain you have verified with Resend. An unverified sender is refused at send time, not at setup.",
+      "required": true,
+      "send": { "as": "from", "value": "string" }
+    },
+    {
+      "type": "expression",
+      "key": "to",
+      "label": "To",
+      "example": "{{ $json.email }}",
+      "description": "One address, a comma-separated list, or an expression. Resend's simulator addresses (delivered@resend.dev, bounced@resend.dev) are LIVE sends that are billed and counted — they are not a sandbox.",
+      "required": true,
+      "send": {
+        "as": "to",
+        "value": "list",
+        "separator": ",",
+        "$comment": "Resend wants a JSON array, and an author holding one address, a pasted list, or an upstream array should not have to know which. `list` splits a string on the separator, trims, drops the blanks, and passes an array straight through."
+      }
+    },
+    {
+      "type": "expression",
+      "key": "subject",
+      "label": "Subject",
+      "example": "Your order {{ $json.order_id }}",
+      "send": { "as": "subject", "value": "string", "default": "" }
+    },
+    {
+      "type": "textarea",
+      "key": "html",
+      "label": "HTML body",
+      "rows": 6,
+      "send": { "as": "html", "value": "string", "omitEmpty": true }
+    },
+    {
+      "type": "textarea",
+      "key": "text",
+      "label": "Plain-text body",
+      "rows": 4,
+      "send": { "as": "text", "value": "string", "omitEmpty": true }
+    },
+    {
+      "type": "text",
+      "key": "replyTo",
+      "label": "Reply-To",
+      "placeholder": "support@yourdomain.com",
+      "send": { "as": "reply_to", "value": "string", "omitEmpty": true }
+    },
+    {
+      "type": "keyvalue",
+      "key": "headers",
+      "label": "Custom headers",
+      "keyPlaceholder": "X-Entity-Ref-ID",
+      "valuePlaceholder": "{{ $json.order_id }}",
+      "description": "Sent as the email's own headers. The usual use is a threading or reference id.",
+      "send": { "as": "headers", "value": "keyvalue", "encoding": "object" }
+    }
+  ],
+
+  "defaultConfig": { "mode": "auto" },
+
+  "outputShape": [
+    { "path": "mode", "type": "string", "description": "Which estate this ran against. Resend has no sandbox, so: fake or live." },
+    { "path": "connection", "type": "string", "description": "The connection id that was used." },
+    { "path": "data.id", "type": "string", "description": "Resend's id for the email (a UUID). Look the send up with it, or dedupe on it." }
+  ],
+
+  "contract": {
+    "sends": ["from", "to", "subject", "html", "text", "reply_to", "headers"],
+    "reads": ["id"]
+  }
+}
