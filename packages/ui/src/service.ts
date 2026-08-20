@@ -49,6 +49,7 @@ export const RESEND_CREDENTIALS = [
   {
     "key": "apiKey",
     "label": "API key",
+    "scope": "account",
     "secret": true,
     "help": "re_... from the Resend dashboard. There is only one estate, so this key sends real email."
   }
