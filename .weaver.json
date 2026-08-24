@@ -32,7 +32,7 @@
     "packages/php/CHANGELOG.md": "a8965b80a0a10630d5f5fcf59fabcaef1f46f19f1e6d4057b8767d17e8a52e05",
     "packages/php/LICENSE": "9c194b64f52c76e677eb84a3e30f369c82727ea58abe50670d5de3f9ccd23270",
     "packages/php/README.md": "640179e47fe4d220f05b7aad62a70753fbc26e547b780f147cb3a22cf5c66056",
-    "packages/php/src/Actions/EmailSend.php": "f76e19d1b2e884765041052e612a3a30f35c41e2de96b0622a6c8efb665f0100",
+    "packages/php/src/Actions/EmailSend.php": "15dc544bb6e3a2c86e5557d01bf3466aaeed5d0893307d1b440ce27efa719862",
     "packages/php/src/Resend.php": "612fe7f8e4c034a5bc6d5b64834e9196762073f79e89fbf878a75268e2c2951d",
     "packages/php/src/ResendFaker.php": "1f25d56a3938a0bff352835715396003f2f6e795d95441a3b2bb4776ab2aebba",
     "packages/php/tests/FakerTest.php": "0f72602576fb9101ec4a191ee5c0467a874a1155afee9923004d0c7cadd304a9",
