@@ -55,7 +55,7 @@
     "packages/ui/package.json": "69c94b1c73e45c8dd1f58308d58142c65027acfd7d652a3f25720a1ebbf84ddd",
     "packages/ui/src/index.ts": "31afb1443382c0b676c55935c56cffff3750afa6045b3d006c84d4a0249ddb27",
     "packages/ui/src/kinds/email-send.ts": "9b51ecf48c6aa7e99d0a8590ae535d2e8699adf2298443f39346fb36b1191291",
-    "packages/ui/src/service.ts": "a39ac6869115d7b413d0aba93980e5039fc33bc4a6377771a598b08efaa38092",
+    "packages/ui/src/service.ts": "f0ed34d70c868edfada28435194307aa5bd79191b087f564a0e2be7c18a88220",
     "packages/ui/tests/kinds.test.ts": "f1d9c0336fdd26589aea1cc3c248774d9704a548cfd062c2fdb5c02542f5848f",
     "packages/ui/tsconfig.json": "2cdc4c3b504406aa9553ffad3d936061d66be410030ac3571f0fc81d737d6875",
     "packages/ui/tsup.config.ts": "4067a7f50c1fbbc3c25addab30d28ccada74cc2f80f1b23aecbdc85a3fa50bc0",
