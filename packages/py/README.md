@@ -27,6 +27,46 @@ dependencies.
 subject to the kit's full approval bar, and one per provider is hundreds of
 dependencies nobody is tracking.
 
+## Setting it up
+
+Everything below is generated from `provider/manifest.json`, so it cannot disagree with what the packages do.
+
+### Credentials
+
+A Resend connection holds 1 value.
+
+Every value here is `account` scope: one per connected account, not one per installation.
+
+| Field | Scope | Secret | Where it comes from |
+|---|---|---|---|
+| **API key** | per connected account | **secret** | re_... from the Resend dashboard. There is only one estate, so this key sends real email. |
+
+### The estate
+
+**Resend has no test estate, and somebody checked.** Everything this connector does is real. Use the faker to build against it.
+
+> Resend has NO test estate, and somebody checked. Its simulator RECIPIENTS -- delivered@resend.dev, bounced@resend.dev, complained@resend.dev, suppressed@resend.dev -- are not one: the send is real, it is billed, and it counts against the quota. Modelling them as a sandbox would put a live send behind a control labelled "test", so `mode` does not offer sandbox at all and `fake` is the primary development mode rather than the fallback.
+
+## What it can do
+
+### Actions
+
+#### `email_send` — Send email
+
+Send an email through Resend.
+
+`POST /emails` · idempotent — safe to replay
+
+| Input | Required | What it is |
+|---|---|---|
+| `from` | yes | Must be an address on a domain you have verified with Resend. An unverified sender is refused at send time, not at setup. |
+| `to` | yes | One address, a comma-separated list, or an expression. Resend's simulator addresses (delivered@resend.dev, bounced@resend.dev) are LIVE sends that are billed and counted — they are not a sandbox. |
+| `subject` | no | Subject |
+| `html` | no | HTML body |
+| `text` | no | Plain-text body |
+| `replyTo` | no | Reply-To |
+| `headers` | no | Sent as the email's own headers. The usual use is a threading or reference id. |
+
 ## Run it before you have credentials
 
 Every operation ships a **faker**, whether or not Resend has a sandbox. Set a
