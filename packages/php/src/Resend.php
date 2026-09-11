@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ParticleAcademy\Resend;
 
+use ParticleAcademy\Connectors\FakeValues;
 use ParticleAcademy\Connectors\Mode;
 use ParticleAcademy\Connectors\PreparedRequest;
 use ParticleAcademy\Connectors\SandboxKind;
@@ -67,7 +68,12 @@ final class Resend
             ],
             requires: self::REQUIRES,
             authorize: self::authorize(...),
-            faker: ResendFaker::respond(...),
+            // The core calls a faker ($operation, $config, $fake, $input); respond()
+            // takes TypeScript's FakeRequest shape. This is the translation.
+            faker: static fn (string $operation, array $config, FakeValues $fake, mixed $input = null): mixed => ResendFaker::respond(
+                $operation,
+                ['config' => $config, 'fake' => $fake, 'input' => $input],
+            ),
             idempotencyHeader: self::IDEMPOTENCY_HEADER,
         );
     }
