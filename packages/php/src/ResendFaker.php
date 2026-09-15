@@ -48,7 +48,7 @@ final class ResendFaker
     }
 
     /** @param array<string,mixed> $config */
-    private static function EmailSend(array $config, mixed $fake): array
+    private static function EmailSend(array $config, mixed $fake): array|\stdClass
     {
         return [
         'id' => $fake->hex(8).'-'.$fake->hex(4).'-'.$fake->hex(4).'-'.$fake->hex(4).'-'.$fake->hex(12),
