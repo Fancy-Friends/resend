@@ -7,6 +7,19 @@ The four packages share one version, because they are generated from one
 `provider/` definition and a version that meant something different in each
 would be a version nobody could reason about.
 
+## [0.4.0] — 2026-09-15
+
+### Added
+
+- **`email_received` trigger — inbound email.** Resend delivers an `email.received` webhook when mail arrives at one of your receiving addresses, signed by Svix: `{svix-id}.{svix-timestamp}.{body}` under HMAC-SHA256, the signature base64 in `svix-signature` as a space-separated list of `v1,<sig>` of which ANY may match, and a `whsec_<base64>` secret whose HMAC key is the DECODED remainder. The connection stores the secret exactly as the dashboard shows it; the verifier strips the prefix and decodes it, and refuses a secret without its prefix, or one that is not base64, by name rather than failing like a wrong secret. A delivery without its `svix-id` is refused by name too. Five-minute replay window.
+- **The trigger reads the email FIRST.** The webhook carries metadata only — no body, no headers, no attachment bytes — so the trigger's `then` block runs `email_get` with the delivery's `email_id` before the run starts and publishes the result under `email`: bodies, headers, message id, the raw download URL and the attachment list. A failed read fails the run rather than starting a flow that assumes the email was there. `verdicts` is published as an explicit `null`: Resend exposes no SPF, DKIM or DMARC verdicts, and a flow looking for them must find a null, not a missing key. Fake mode composes the faked delivery with the faked read, so `email.id` equals `data.email_id` on the canvas exactly as it does live.
+- **`email_get`, `attachment_list`, `attachment_get`.** A received email in full (`GET /emails/receiving/{id}`); its attachments with signed download URLs (`…/attachments`, with `limit`, `after`, `before`); one attachment as a signed download URL with its id and expiry beside it (`…/attachments/{id}`). The bytes never pass through the connector.
+- **`webhookSecret` credential**, optional, used only by the trigger.
+
+### Changed
+
+- **Requires `fancy-connector-core` ≥ 0.9.0** — `particle-academy/fancy-connector-core` for php, `@particle-academy/fancy-connector-core` for js. The Svix scheme needs the core's `secretEncoding` / `secretPrefix`, its `{id}` payload slot and its any-of signature rule, all added in 0.9.0; `CONNECTOR_API_VERSION` is unchanged at 1.
+
 ## [0.3.4] — 2026-09-12
 
 ### Changed

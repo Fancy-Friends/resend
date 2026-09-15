@@ -33,6 +33,14 @@ test("every kind declares what it emits", () => {
 
 test("the registry names are exactly what the manifest says", () => {
   assert.deepEqual(RESEND_KINDS.map((kind) => kind.name), [
-    "@particle-academy/resend_email_send"
+    "@particle-academy/resend_attachment_get",
+    "@particle-academy/resend_attachment_list",
+    "@particle-academy/resend_email_get",
+    "@particle-academy/resend_email_send",
+    "@particle-academy/resend_email_received_trigger"
   ]);
+});
+
+test("a trigger takes no input port — it starts a run rather than continuing one", () => {
+  assert.deepEqual(RESEND_KINDS.find((k) => k.name.endsWith("_email_received_trigger"))?.inputs, []);
 });

@@ -38,6 +38,14 @@
       "scope": "account",
       "secret": true,
       "help": "re_... from the Resend dashboard. There is only one estate, so this key sends real email."
+    },
+    {
+      "key": "webhookSecret",
+      "label": "Webhook signing secret",
+      "scope": "account",
+      "secret": true,
+      "optional": true,
+      "help": "whsec_... from the webhook endpoint you added in the Resend dashboard, exactly as shown -- the prefix stays. Required only by the email_received trigger."
     }
   ]
 }

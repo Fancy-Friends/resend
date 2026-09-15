@@ -7,8 +7,14 @@
 #
 # npm run provider -- resend
 
+from .attachment_get import attachment_get
+from .attachment_list import attachment_list
+from .email_get import email_get
 from .email_send import email_send
 
 __all__ = [
+    "attachment_get",
+    "attachment_list",
+    "email_get",
     "email_send",
 ]

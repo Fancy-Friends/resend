@@ -35,13 +35,14 @@ Everything below is generated from `provider/manifest.json`, so it cannot disagr
 
 ### Credentials
 
-A Resend connection holds 1 value.
+A Resend connection holds 2 values.
 
 Every value here is `account` scope: one per connected account, not one per installation.
 
 | Field | Scope | Secret | Where it comes from |
 |---|---|---|---|
 | **API key** | per connected account | **secret** | re_... from the Resend dashboard. There is only one estate, so this key sends real email. |
+| **Webhook signing secret** *(optional)* | per connected account | **secret** | whsec_... from the webhook endpoint you added in the Resend dashboard, exactly as shown -- the prefix stays. Required only by the email_received trigger. |
 
 ### The estate
 
@@ -52,6 +53,40 @@ Every value here is `account` scope: one per connected account, not one per inst
 ## What it can do
 
 ### Actions
+
+#### `attachment_get` — Get attachment
+
+Turn one attachment of a received email into a signed download URL.
+
+`GET /emails/receiving/{emailId}/attachments/{attachmentId}` · reads only — safe to replay
+
+| Input | Required | What it is |
+|---|---|---|
+| `emailId` | yes | The received email's id -- `data.email_id` on the delivery, or `email.id` after the trigger's read. |
+| `attachmentId` | yes | From `email.attachments[].id` on the trigger, or from attachment_list. |
+
+#### `attachment_list` — List attachments
+
+List a received email's attachments, each with a signed download URL.
+
+`GET /emails/receiving/{emailId}/attachments` · reads only — safe to replay
+
+| Input | Required | What it is |
+|---|---|---|
+| `emailId` | yes | The received email's id -- `data.email_id` on the delivery, or `email.id` after the trigger's read. |
+| `limit` | no | Attachments per page, 1 to 100. Leave blank for all of them. |
+| `after` | no | An attachment id: the page after it. Not together with `before`. |
+| `before` | no | An attachment id: the page before it. Not together with `after`. |
+
+#### `email_get` — Get received email
+
+Read a received email in full: its bodies, its headers and the list of its attachments.
+
+`GET /emails/receiving/{emailId}` · reads only — safe to replay
+
+| Input | Required | What it is |
+|---|---|---|
+| `emailId` | yes | The received email's id -- `data.email_id` on an email.received delivery. Not the message_id: that is the RFC 5322 header, which Resend does not look up by. |
 
 #### `email_send` — Send email
 
@@ -68,6 +103,18 @@ Send an email through Resend.
 | `text` | no | Plain-text body |
 | `replyTo` | no | Reply-To |
 | `headers` | no | Sent as the email's own headers. The usual use is a threading or reference id. |
+
+### Triggers
+
+#### `email_received` — Email received
+
+Start when an email arrives at one of your Resend receiving addresses, with the email read in full.
+
+Delivered by webhook, and the signature is verified before anything runs. The delivery only names what arrived, so the run's first step reads it: `email_get` with `emailId` from `data.email_id`, published under `email`. A failed read fails the run.
+
+**You have to set this up with the provider first:**
+
+Point a receiving domain's MX record at Resend, then in the Resend dashboard (Webhooks → Add webhook) point an endpoint at the route your host mounts for this trigger and subscribe it to email.received. Put the endpoint's signing secret -- shown as whsec_… -- on the connection as `webhookSecret`, exactly as shown.
 
 ## Run it before you have credentials
 

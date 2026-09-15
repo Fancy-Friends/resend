@@ -21,4 +21,8 @@
 
 export * from "./service.js";
 export * from "./faker.js";
+export * from "./actions/attachment-get.js";
+export * from "./actions/attachment-list.js";
+export * from "./actions/email-get.js";
 export * from "./actions/email-send.js";
+export * from "./triggers/email-received.js";
