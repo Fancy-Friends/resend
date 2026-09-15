@@ -1,0 +1,40 @@
+{
+  "$comment": "A received email as Resend actually returns one, read from the API reference's own example on 2026-09-15. The id is BOUND to the emailId that was asked for, so the trigger's then-read composes a fake event whose `email.id` equals its `data.email_id` -- the same invariant a real read has. `text` is null on purpose: an HTML-only email is the common case and an author has to see the null where it will appear.",
+  "operation": "email_get",
+
+  "response": {
+    "object": "email",
+    "id": { "$config": "emailId", "as": "string", "fallback": { "$fake": "uuid" } },
+    "to": ["inbox@yourdomain.test"],
+    "from": "ada@example.test",
+    "created_at": "2026-09-15T12:00:11.894Z",
+    "subject": "Sending this example",
+    "html": "Congrats on receiving your <strong>first email</strong>!",
+    "html_format": "data_uri",
+    "text": null,
+    "headers": {
+      "from": "Ada Lovelace <ada@example.test>",
+      "return-path": "ada@example.test",
+      "mime-version": "1.0"
+    },
+    "bcc": [],
+    "cc": [],
+    "reply_to": [],
+    "received_for": [],
+    "message_id": "<111-222-333@email.example.test>",
+    "raw": {
+      "download_url": "https://example.resend.com/receiving/raw/054da427-439a-4e91-b785-e4fb1966285f?Signature=fake",
+      "expires_at": "2026-09-15T13:00:11.894Z"
+    },
+    "attachments": [
+      {
+        "id": { "$fake": "uuid" },
+        "filename": "avatar.png",
+        "content_type": "image/png",
+        "content_disposition": "inline",
+        "content_id": "img001",
+        "size": 4096
+      }
+    ]
+  }
+}

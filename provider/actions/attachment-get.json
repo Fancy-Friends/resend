@@ -1,0 +1,57 @@
+{
+  "$comment": "One attachment of a received email, as a signed download URL with its expiry. The bytes are never carried through the connector -- the URL is handed to whatever downloads them -- and the id and the expiry are published BESIDE the URL rather than folded into it, per Fancy's alignment note (2026-09-15): a URL that expires is only usable by something that knows when. Read from https://resend.com/docs/api-reference/emails/retrieve-received-email-attachment, checked 2026-09-15.",
+  "operation": "attachment_get",
+  "kind": "attachment_get",
+  "title": "Get attachment",
+  "description": "Turn one attachment of a received email into a signed download URL.",
+  "summary": "an attachment download URL",
+  "icon": "📎",
+  "docs": "https://resend.com/docs/api-reference/emails/retrieve-received-email-attachment",
+
+  "sideEffects": "none",
+
+  "request": {
+    "method": "GET",
+    "path": "/emails/receiving/{emailId}/attachments/{attachmentId}",
+    "encoding": "json"
+  },
+
+  "config": [
+    {
+      "type": "text",
+      "key": "emailId",
+      "label": "Email ID",
+      "required": true,
+      "description": "The received email's id -- `data.email_id` on the delivery, or `email.id` after the trigger's read.",
+      "send": { "in": "path", "as": "emailId", "value": "string" }
+    },
+    {
+      "type": "text",
+      "key": "attachmentId",
+      "label": "Attachment ID",
+      "required": true,
+      "description": "From `email.attachments[].id` on the trigger, or from attachment_list.",
+      "send": { "in": "path", "as": "attachmentId", "value": "string" }
+    }
+  ],
+
+  "defaultConfig": { "mode": "auto" },
+
+  "outputShape": [
+    { "path": "mode", "type": "string", "description": "Which estate this ran against. Resend has no sandbox, so: fake or live." },
+    { "path": "connection", "type": "string", "description": "The connection id that was used." },
+    { "path": "data.id", "type": "string", "description": "The attachment's id, echoed back." },
+    { "path": "data.filename", "type": "string", "description": "The original filename." },
+    { "path": "data.size", "type": "number", "description": "Size in bytes." },
+    { "path": "data.content_type", "type": "string", "description": "The MIME type." },
+    { "path": "data.content_disposition", "type": "string", "description": "inline or attachment." },
+    { "path": "data.content_id", "type": "string", "description": "The Content-ID an inline image is referenced by in the HTML; null otherwise." },
+    { "path": "data.download_url", "type": "string", "description": "A signed URL for the bytes. Download before download_url expires; the connector never carries the bytes." },
+    { "path": "data.expires_at", "type": "string", "description": "ISO 8601 expiry of download_url." }
+  ],
+
+  "contract": {
+    "sends": [],
+    "reads": ["id", "filename", "size", "content_type", "content_disposition", "content_id", "download_url", "expires_at"]
+  }
+}

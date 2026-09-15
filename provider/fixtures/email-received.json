@@ -1,0 +1,33 @@
+{
+  "$comment": "The DELIVERY alone -- what Resend POSTs, from https://resend.com/docs/webhooks/emails/received on 2026-09-15 -- not the composite the trigger publishes. The then-read adds `email` and `verdicts` on top of this in every runtime, fake mode included: email_get is faked with this event's email_id, so `email.id` equals `data.email_id` exactly as it would after a real read. The email_id is a VALUE so the two draws cannot disagree.",
+  "operation": "email_received",
+
+  "values": {
+    "emailId": { "$fake": "uuid" }
+  },
+
+  "response": {
+    "type": "email.received",
+    "created_at": "2026-09-15T12:00:12.126Z",
+    "data": {
+      "email_id": { "$ref": "emailId" },
+      "created_at": "2026-09-15T12:00:11.894Z",
+      "from": "ada@example.test",
+      "to": ["inbox@yourdomain.test"],
+      "bcc": [],
+      "cc": [],
+      "received_for": [],
+      "message_id": "<111-222-333@email.example.test>",
+      "subject": "Sending this example",
+      "attachments": [
+        {
+          "id": { "$fake": "uuid" },
+          "filename": "avatar.png",
+          "content_type": "image/png",
+          "content_disposition": "inline",
+          "content_id": "img001"
+        }
+      ]
+    }
+  }
+}

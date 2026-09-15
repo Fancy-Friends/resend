@@ -1,0 +1,58 @@
+{
+  "$comment": "The read that makes inbound email usable. Resend's email.received webhook carries metadata only -- \"Webhooks do not include the email body, headers, or attachments\" -- so the trigger names this action in its `then` block and runs it first. Read from https://resend.com/docs/api-reference/emails/retrieve-received-email, checked 2026-09-15.",
+  "operation": "email_get",
+  "kind": "email_get",
+  "title": "Get received email",
+  "description": "Read a received email in full: its bodies, its headers and the list of its attachments.",
+  "summary": "a received email",
+  "icon": "📨",
+  "docs": "https://resend.com/docs/api-reference/emails/retrieve-received-email",
+
+  "sideEffects": "none",
+
+  "request": {
+    "method": "GET",
+    "path": "/emails/receiving/{emailId}",
+    "encoding": "json"
+  },
+
+  "config": [
+    {
+      "type": "text",
+      "key": "emailId",
+      "label": "Email ID",
+      "required": true,
+      "description": "The received email's id -- `data.email_id` on an email.received delivery. Not the message_id: that is the RFC 5322 header, which Resend does not look up by.",
+      "send": { "in": "path", "as": "emailId", "value": "string" }
+    }
+  ],
+
+  "defaultConfig": { "mode": "auto" },
+
+  "outputShape": [
+    { "path": "mode", "type": "string", "description": "Which estate this ran against. Resend has no sandbox, so: fake or live." },
+    { "path": "connection", "type": "string", "description": "The connection id that was used." },
+    { "path": "data.id", "type": "string", "description": "The received email's id (a UUID)." },
+    { "path": "data.from", "type": "string", "description": "The sender's address, bare." },
+    { "path": "data.to", "type": "array", "description": "Recipient addresses." },
+    { "path": "data.cc", "type": "array", "description": "Carbon-copy addresses; empty when none." },
+    { "path": "data.bcc", "type": "array", "description": "Blind-copy addresses; empty when none." },
+    { "path": "data.reply_to", "type": "array", "description": "Reply-To addresses; empty when none." },
+    { "path": "data.subject", "type": "string", "description": "The subject line." },
+    { "path": "data.created_at", "type": "string", "description": "ISO 8601, when Resend received it." },
+    { "path": "data.html", "type": "string", "description": "The HTML body, when the email carried one." },
+    { "path": "data.html_format", "type": "string", "description": "How inline images are referenced in `html`: data_uri or cid." },
+    { "path": "data.text", "type": "string", "description": "The plain-text body. NULL when the email carried only HTML -- branch on it before reading." },
+    { "path": "data.headers", "type": "object", "description": "The email's headers as a map, lower-cased names (from, return-path, mime-version, …)." },
+    { "path": "data.received_for", "type": "array", "description": "Addresses the email was forwarded for, when it reached Resend through a forward." },
+    { "path": "data.message_id", "type": "string", "description": "The RFC 5322 Message-ID, angle brackets included. Dedupe across providers on this." },
+    { "path": "data.raw.download_url", "type": "string", "description": "A signed URL for the raw MIME message. Expires -- see raw.expires_at. NULL when Resend kept no raw copy." },
+    { "path": "data.raw.expires_at", "type": "string", "description": "ISO 8601 expiry of raw.download_url, about an hour after the read." },
+    { "path": "data.attachments", "type": "array", "description": "The attachments' METADATA -- id, filename, content_type, content_disposition, content_id, size -- never the bytes. attachment_get turns an id into a download URL." }
+  ],
+
+  "contract": {
+    "sends": [],
+    "reads": ["id", "from", "to", "cc", "bcc", "reply_to", "subject", "created_at", "html", "html_format", "text", "headers", "received_for", "message_id", "raw", "attachments"]
+  }
+}

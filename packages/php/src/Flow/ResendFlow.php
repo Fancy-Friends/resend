@@ -38,7 +38,11 @@ final class ResendFlow
 {
     /** @var list<class-string> */
     public const EXECUTORS = [
+        AttachmentGetExecutor::class,
+        AttachmentListExecutor::class,
+        EmailGetExecutor::class,
         EmailSendExecutor::class,
+        EmailReceivedTriggerExecutor::class,
     ];
 
     /**
