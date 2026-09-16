@@ -66,7 +66,7 @@
     "packages/py/src/fancy_resend/actions/attachment_list.py": "ad391e6fa8666a10b07ff1967ce8aab77768bf8b06b70868d83b1865609f8360",
     "packages/py/src/fancy_resend/actions/email_get.py": "baf82594577647d81d7213e0654d43c2bf85df41f32e3125ba9464cb33794cd3",
     "packages/py/src/fancy_resend/actions/email_send.py": "2bb9ea6e18f880085cc75df56a6b3928432d510895832f9e381b22169a5d2c4f",
-    "packages/py/src/fancy_resend/faker.py": "6f131195289ee29c9930fea1a2374f6ef062916c8b27b52cf43ead4e78a9c93b",
+    "packages/py/src/fancy_resend/faker.py": "9f24f4fd51d7deb9f535ccc090b43646923e4603b7e9b23bd3ac83b67cecc698",
     "packages/py/src/fancy_resend/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "packages/py/src/fancy_resend/service.py": "f127f76e1cb65aec908538518ebf21856059550692da09ff53f01546c0dfd5b8",
     "packages/py/src/fancy_resend/triggers/__init__.py": "d11899b02a541782b07a88becae6efd8406d41ba6325a4b33d3e7864f628f071",
