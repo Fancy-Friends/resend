@@ -61,7 +61,7 @@
     "packages/py/pyproject.toml": "b679e144c381688369b3f273490550693463980ccf99881413c7357a546f1826",
     "packages/py/src/fancy_resend/__init__.py": "d1553c2e020e203dee0431bffc8441566a1810cc499a02d589fef41467055e6e",
     "packages/py/src/fancy_resend/_fake.py": "6d44e259d014eb196323001acf338959ba16f17f3530376be6f54d52be991e01",
-    "packages/py/src/fancy_resend/_runtime.py": "3908c6c396ff4f67d5ced1ba7de71bbe769d835c40ce255d7be1f8328efa031d",
+    "packages/py/src/fancy_resend/_runtime.py": "5f8aa264995d513e24b506e14b1f1d7b3b12eea3193fc65367213f21c0649535",
     "packages/py/src/fancy_resend/actions/__init__.py": "c4ba227373e41373dde3cb4c4096ce01e9f7816732c42e8af22910e7fefd586c",
     "packages/py/src/fancy_resend/actions/attachment_get.py": "56bd049053dd94018ec662785df515c57b55b07a673fe9c13348572626717d92",
     "packages/py/src/fancy_resend/actions/attachment_list.py": "ad391e6fa8666a10b07ff1967ce8aab77768bf8b06b70868d83b1865609f8360",
