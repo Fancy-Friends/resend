@@ -7,6 +7,18 @@ The four packages share one version, because they are generated from one
 `provider/` definition and a version that meant something different in each
 would be a version nobody could reason about.
 
+## [0.4.1] — 2026-11-05
+
+### Fixed
+
+- **PHP: a `headers` map passed as an OBJECT is read, not dropped.** The
+  generated PHP read a map that arrived as a decoded JSON OBJECT (`stdClass`,
+  e.g. an upstream node's value or `json_decode(..., false)`) as "not an
+  array" and sent it EMPTY, without an error: silent data loss. It now reads
+  the object's properties. **Affected:** PHP callers passing the map as an
+  object. **Not affected:** callers passing an array, which always worked;
+  they need do nothing. TypeScript and Python were never affected.
+
 ## [0.4.0] — 2026-09-15
 
 ### Added
