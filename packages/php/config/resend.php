@@ -20,8 +20,8 @@ return [
 
     'credentials' => [
         // API key (per connected account, secret).
-        'apiKey' => env('RESEND_APIKEY'),
+        'apiKey' => env('RESEND_API_KEY', env('RESEND_APIKEY')),
         // Webhook signing secret (per connected account, secret).
-        'webhookSecret' => env('RESEND_WEBHOOKSECRET'),
+        'webhookSecret' => env('RESEND_WEBHOOK_SECRET', env('RESEND_WEBHOOKSECRET')),
     ],
 ];
