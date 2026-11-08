@@ -25,7 +25,7 @@ from .faker import respond
 from .service import BASE_URLS, CONNECTOR_API_VERSION, REQUIRES, SANDBOX, SERVICE, TITLE, descriptor
 from .triggers import email_received
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 
 __all__ = [
     "BASE_URLS",
