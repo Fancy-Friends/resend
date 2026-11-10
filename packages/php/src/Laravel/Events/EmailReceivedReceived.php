@@ -11,6 +11,8 @@ namespace ParticleAcademy\Resend\Laravel\Events;
 
 /**
  * A VERIFIED Resend email_received delivery. Listen for it in the app.
+ * ONE endpoint serves every tenant: route it by recipient (routeKeys()), only to a
+ * connection your app minted, and drop an unknown key with the 2xx already sent.
  */
 final class EmailReceivedReceived
 {
@@ -19,4 +21,29 @@ final class EmailReceivedReceived
         public readonly mixed $payload,
         public readonly array $headers = [],
     ) {}
+
+    /** Every recipient in the payload, from ANY of: data.to.[], data.cc.[], data.received_for.[]. */
+    public function routeKeys(): array
+    {
+        $keys = [];
+        foreach (['data.to.[]', 'data.cc.[]', 'data.received_for.[]'] as $path) {
+            $values = [$this->payload];
+            foreach (explode('.', $path) as $segment) {
+                $next = [];
+                foreach ($values as $value) {
+                    if ($segment === '[]') {
+                        if (is_array($value)) {
+                            array_push($next, ...array_values($value));
+                        }
+                    } elseif (is_array($value) && array_key_exists($segment, $value)) {
+                        $next[] = $value[$segment];
+                    }
+                }
+                $values = $next;
+            }
+            array_push($keys, ...$values);
+        }
+
+        return array_values(array_unique(array_filter($keys, 'is_scalar')));
+    }
 }

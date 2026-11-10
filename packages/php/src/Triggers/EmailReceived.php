@@ -128,4 +128,7 @@ final class EmailReceived
             id: $id,
         );
     }
+
+    /** The ONE key a host may route a delivery by: only after verification, only to a connection it minted; an unmapped key is dropped with a 2xx. */
+    public const ROUTE = ['by' => 'recipient', 'path' => ['data.to.[]', 'data.cc.[]', 'data.received_for.[]']];
 }

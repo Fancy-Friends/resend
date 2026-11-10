@@ -43,6 +43,12 @@
     "$comment": "The run's FIRST step, after the host has verified the delivery and answered Resend: email_get with the delivery's email_id, published under `email`. A failed read fails the run with the core's classification -- a delivery whose email cannot be read must not start a flow that assumes it was. `verdicts: null` is said rather than left absent: Resend exposes no SPF/DKIM/DMARC verdicts on a received email (checked 2026-09-14), and an author looking for them must find a null, not a missing key that reads like a field nobody wired. Agreed with Fancy 2026-09-15."
   },
 
+  "$routeComment": "MOIC #3a, 2026-11-10: one receiving domain serves every org, each org its own local part, so the ADDRESS routes. It is in To, in Cc, or ONLY in received_for -- Resend: 'The recipient addresses the email was forwarded for, taken from the `for` clause of the message's Received headers' -- which is where a Bcc'd or forwarded copy names it. Routing by To alone drops both silently, so the path is the union (fancy-connector-core 0.15.2). Compare addresses case-insensitively, and only to addresses your app minted.",
+  "route": {
+    "by": "recipient",
+    "path": ["data.to.[]", "data.cc.[]", "data.received_for.[]"]
+  },
+
   "config": [],
 
   "defaultConfig": { "mode": "auto" },
