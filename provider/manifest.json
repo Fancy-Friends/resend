@@ -7,6 +7,7 @@
   "title": "Resend",
   "domain": "email",
   "docs": "https://resend.com/docs/api-reference/introduction",
+  "summary": "Send email with Resend, and receive it: every message to any address on your receiving domain arrives as a verified trigger, routed to the right account by its recipient.",
 
   "auth": "api_key",
   "requires": ["apiKey"],
@@ -30,6 +31,37 @@
   "idempotencyNote": "Resend honours this for 24 hours. It is what makes a retried durable run resend nothing instead of mailing the recipient twice -- the difference between `idempotent` and `unsafe-to-replay` is that this one is merely embarrassing, not financial, but the header costs nothing and removes it entirely.",
 
   "encoding": "json",
+
+  "$setupComment": "Every step read from resend.com/docs on 2026-11-10 (each cites its page). Not stated by those pages, so not claimed: that a key's value is shown exactly once at creation (they say it cannot be viewed after), and a fixed MX host (they say copy the value shown on the domain's page).",
+  "setup": [
+    {
+      "title": "Set up a receiving domain for {{appName}}",
+      "detail": "Resend receives mail for ANY address at a verified domain, so one domain serves every account: give each its own local part. Use a SUBDOMAIN if the root domain already handles mail. On the Domains page, copy the MX record value shown for the domain (it differs by region) into your DNS, then confirm it. Resend's MX record must be the LOWEST priority value on that domain, or mail does not reach Resend.",
+      "url": "https://resend.com/docs/dashboard/receiving/custom-domains"
+    },
+    {
+      "title": "Create a Full access API key",
+      "detail": "Sending access \"can only send emails\", and the email_received trigger READS every message (email_get) and its attachments, so this connector needs Full access. The key's value cannot be viewed again after it is created, so store it straight away.",
+      "url": "https://resend.com/docs/api-reference/api-keys/create-api-key",
+      "copy": [{ "label": "Key name", "value": "{{appName}} ({{connector}})" }],
+      "fields": ["apiKey"]
+    },
+    {
+      "title": "Point a webhook at {{appName}}",
+      "detail": "On the Webhooks page, Add Webhook: the endpoint is {{webhookUrl}}, and the event is email.received. Copy the webhook's signing secret exactly as shown, whsec_ prefix included; every delivery is refused until it is set.",
+      "url": "https://resend.com/docs/webhooks/create-webhook",
+      "copy": [{ "label": "Endpoint URL", "value": "{{webhookUrl}}" }],
+      "fields": ["webhookSecret"]
+    },
+    {
+      "title": "Send a test message to an account's address",
+      "detail": "Send one email to an address on the receiving domain that belongs to an account, and check it arrives routed to that account.",
+      "url": "https://resend.com/docs/dashboard/receiving/introduction",
+      "actor": "agent",
+      "prompt": "Send one email to an address on {{appName}}'s receiving domain that belongs to a known account. Confirm {{appName}} received an email_received delivery for {{connector}}, that its signature verified, and that its recipient route matched that account. Report the email_id, the route key that matched, and the subject that email_get returned.",
+      "done": "The delivery verified, routed to the account that owns the address, and email_get returned the message you sent."
+    }
+  ],
 
   "credentialFields": [
     {

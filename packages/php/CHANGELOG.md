@@ -7,6 +7,38 @@ The four packages share one version, because they are generated from one
 `provider/` definition and a version that meant something different in each
 would be a version nobody could reason about.
 
+## [0.6.0] — 2026-11-10
+
+### Added
+
+- **`email_received` is routed by RECIPIENT, so one receiving domain serves
+  every account.** Resend receives mail for any address at a verified domain:
+  give each account its own local part, and the trigger declares a `route`
+  (`by: "recipient"`) over `data.to`, `data.cc` and `data.received_for`.
+  - **All three, because the address an email was received for is in any one
+    of them.** `received_for` comes from the `for` clause of the message's
+    `Received` headers, and it is the only place a Bcc'd or forwarded copy
+    names the address.
+  - Routing by To alone would silently drop those. A list of paths is a union,
+    which needs fancy-connector-core **0.15.2**; this package now requires it.
+  - The rule is fixed: route only after verification, only to an address your
+    app minted, compared case-insensitively. An unmapped address is dropped
+    with the 2xx already sent.
+  - The Laravel event's `routeKeys()` returns every recipient once, and its
+    Pest suite proves the union.
+  - Dedupe on `data.email_id`: Resend redelivers on failure.
+- **Complete setup steps**, in SETUP.md and the registry index:
+  - a receiving domain (a subdomain if the root already takes mail; Resend's
+    MX record must be the lowest priority);
+  - a FULL access API key, because Sending access "can only send emails" and
+    the trigger reads every message;
+  - the webhook at `{{webhookUrl}}` for `email.received` and its `whsec_`
+    signing secret;
+  - an AGENT step that sends a test message and checks the route.
+
+  Each step cites the Resend page it was checked against on 2026-11-10.
+- A one-line `summary`.
+
 ## [0.5.1] — 2026-11-08
 
 ### Fixed

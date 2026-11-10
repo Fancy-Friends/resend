@@ -39,6 +39,30 @@ it('fakes attachment_get and records it for assertSent', function () {
     Resend::assertSentCount(1);
 });
 
+it('routes email_received by recipient from every declared path, each key once', function () {
+    $event = new \ParticleAcademy\Resend\Laravel\Events\EmailReceivedReceived([
+        'data' => [
+            'to' => [
+                'key-0@resend.test',
+            ],
+            'cc' => [
+                'key-1@resend.test',
+                'key-0@resend.test',
+            ],
+            'received_for' => [
+                'key-2@resend.test',
+                'key-0@resend.test',
+            ],
+        ],
+    ]);
+
+    expect($event->routeKeys())->toBe([
+        'key-0@resend.test',
+        'key-1@resend.test',
+        'key-2@resend.test',
+    ]);
+});
+
 it('refuses a forged email_received delivery before the app sees it', function () {
     $app = TestApp::boot();
     $app['router']->resendEmailReceived('/hooks/resend');

@@ -30,6 +30,10 @@ SETUP = (
     "subscribe it to email.received. Put the endpoint's signing secret -- shown as whsec_… -- "
     "on the connection as `webhookSecret`, exactly as shown."
 )
+ROUTE: dict[str, str | list[str]] = {
+    "by": "recipient",
+    "path": ["data.to.[]", "data.cc.[]", "data.received_for.[]"],
+}
 
 # The read the trigger runs FIRST — a Resend delivery only names what arrived.
 THEN: dict[str, Any] = {

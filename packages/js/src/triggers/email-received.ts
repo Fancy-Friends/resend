@@ -75,6 +75,7 @@ export const RESEND_EMAIL_RECEIVED: TriggerDescriptor = {
     idHeader: "svix-id",
     parse: parseResendSignature,
   },
+  route: { by: "recipient", path: ["data.to.[]", "data.cc.[]", "data.received_for.[]"] },
   faker: resendFaker,
 };
 

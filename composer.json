@@ -24,7 +24,7 @@
   ],
   "require": {
     "php": "^8.4",
-    "particle-academy/fancy-connector-core": ">=0.9.0 <2.0"
+    "particle-academy/fancy-connector-core": ">=0.15.2 <2.0"
   },
   "require-dev": {
     "laravel/framework": "^13.0",
